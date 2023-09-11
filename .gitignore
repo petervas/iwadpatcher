@@ -57,3 +57,7 @@ iwadpatcher
 # bzip2 files
 bzip2/*
 !bzip2/.gitkeep
+
+# bsdifflib files
+bsdifflib/*
+!bsdifflib/.gitkeep
