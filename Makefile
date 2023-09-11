@@ -1,14 +1,19 @@
-CC			=	gcc
-CFLAGS		+=	-D_XOPEN_SOURCE=500 -O2 -Wall -ansi 
-LDFLAGS		+=	-lbz2
+CC          = gcc
+CFLAGS      += -O2 -Wall -Ibsdifflib
+LDFLAGS     += -lbz2
 
-all:		iwadpatcher
+SOURCES = iwadpatcher.c md5.c patchermain.c patches.c bsdifflib/bspatchlib.c
+OBJECTS = $(SOURCES:.c=.o)
 
-iwadpatcher:	bspatchlib.o iwadpatcher.o md5.o patchermain.o patches.o
-	$(CC) $(LDFLAGS) bspatchlib.o iwadpatcher.o md5.o patchermain.o patches.o -o $@
+.PHONY: all clean
+
+all: iwadpatcher
+
+iwadpatcher: $(OBJECTS)
+	$(CC) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f iwadpatcher bspatchlib.o iwadpatcher.o md5.o patchermain.o patches.o
+	rm -f iwadpatcher $(OBJECTS)
