@@ -1,5 +1,5 @@
 /*-
- * Copyright 2012, Peter Vaskovic, (petervaskovic@yahoo.de)
+ * Copyright 2023, Peter Vaskovic, (petervaskovic@yahoo.de)
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,7 +22,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,99 +47,89 @@
 #define PATH_MAX 260
 #endif
 
-#define NUM_PATCHES	27
+#define MSGSTR_MAX_LEN 512 + PATH_MAX
 
-static const char* patchMD5[NUM_PATCHES] =  				/* md5 hashes */
+enum DoomPatch
 {
-	"fb35c4a5a9fd49ec29ab6e900572c524",
-	"981b03e6d1dc033301aa3095acc437ce", "792fd1fea023d61210857089a7c1e351",
-	"54978d12de87f162b9bcc011676cb3c0", "11e1cd216801ea2657723abc86ecb01f",
-	"1cd63c5ddff1bf8ce844237f580e9cf3", "c4fe9fd920207691a9f493668e0a2083",
-	"c3bea40570c23e511a7ed3ebcd9865f7", "d9153ced9fd5b898b36cc5844e35b520",
-	"30e3c2d0350b67bfbf47271970b74b2f", "ea74a47a791fdef2e9f2ea8b8a9da13b",
-	"d7a07e5d3f4625074312bc299d7ed33f", "c236745bb01d89bbb866c8fed81b6f8c",
-	"25e1459ca71d321525f84628f45ca8cd", "3117e399cdb4298eaa3941625f4b2923",
-	"1e4cb4ef075ad344dd63971637307e04", "66d686b1ed6d35ff103f15dbd30e0341",
-	"b2543a03521365261d0a0f74d5dd90f0", "abb033caf81e26f12a2103e1fa25453f",
-	"1077432e2690d390c256ac908b5f4efa", "78d5898e99e220e4de64edaa0e479593",
-	"4e158d9953c79ccf97bd0663244cc6b6", "1d39e405bf6ee3df69a8d2646c8d5c49",
-	"8f2d3a6a289f5d2f2f9c1eec02b47299", "2fed2031a5b03892106e0f117f17901f",
-	"75c8cf89566741fa9d22447604053bd7", "3493be7e1e2588bc9c8b31eab2587a04"
-};
-
-static const char* patchName[NUM_PATCHES] =  				/* patch names */
-{
-	"DOOM_BFG",
-	"DOOM_11", "DOOM_12",
-	"DOOM_1666", "DOOM_18",
-	"DOOM_19", "DOOM_19UD",
-	"DOOM2_BFG", "DOOM2_1666G",
-	"DOOM2_1666", "DOOM2_17",
-	"DOOM2_17A", "DOOM2_18",
-	"DOOM2_19", "HERETIC_10",
-	"HERETIC_12", "HERETIC_13",
-	"HEXEN_10", "HEXEN_11",
-	"HEXDD_10", "HEXDD_11",
-	"TNT_19", "TNT_19ANTH",
-	"STRIFE1_10", "STRIFE1_131",
-	"PLUTONIA_19", "PLUTONIA_19ANTH"
-};
-
-static unsigned char* patchData[NUM_PATCHES] =  			/* patch data */
-{
+	DOOM_11,
+	DOOM_12,
+	DOOM_1666,
+	DOOM_18,
+	DOOM_19,
+	DOOM_19UD,
 	DOOM_BFG,
-	DOOM_11, DOOM_12,
-	DOOM_1666, DOOM_18,
-	DOOM_19, DOOM_19UD,
-	DOOM2_BFG, DOOM2_1666G,
-	DOOM2_1666, DOOM2_17,
-	DOOM2_17A, DOOM2_18,
-	DOOM2_19, HERETIC_10,
-	HERETIC_12, HERETIC_13,
-	HEXEN_10, HEXEN_11,
-	HEXDD_10, HEXDD_11,
-	TNT_19, TNT_19ANTH,
-	STRIFE1_10, STRIFE1_131,
-	PLUTONIA_19, PLUTONIA_19ANTH
+	DOOM_ETERNAL,
+	DOOM_UNITY,
+	DOOM_KEX,
+	NUM_DOOM_PATCHES
 };
 
-static unsigned int patchLen[NUM_PATCHES] =  				/* patch length */
+enum Doom2Patch
 {
-	DOOM_BFG_len,
-	DOOM_11_len, DOOM_12_len,
-	DOOM_1666_len, DOOM_18_len,
-	DOOM_19_len, DOOM_19UD_len,
-	DOOM2_BFG_len, DOOM2_1666G_len,
-	DOOM2_1666_len, DOOM2_17_len,
-	DOOM2_17A_len, DOOM2_18_len,
-	DOOM2_19_len, HERETIC_10_len,
-	HERETIC_12_len, HERETIC_13_len,
-	HEXEN_10_len, HEXEN_11_len,
-	HEXDD_10_len, HEXDD_11_len,
-	TNT_19_len, TNT_19ANTH_len,
-	STRIFE1_10_len, STRIFE1_131_len,
-	PLUTONIA_19_len, PLUTONIA_19ANTH_len
+	DOOM2_1666G,
+	DOOM2_1666,
+	DOOM2_17,
+	DOOM2_17A,
+	DOOM2_18,
+	DOOM2_19,
+	DOOM2_BFG,
+	DOOM2_ETERNAL,
+	DOOM2_UNITY,
+	DOOM2_KEX,
+	NUM_DOOM2_PATCHES
 };
 
-
-static const char* patchVersion[NUM_PATCHES] =  			/* version numbers */
+enum PlutoniaPatch
 {
-	"BFG edition",
-	"1.1", "1.2",
-	"1.666", "1.8",
-	"1.9", "1.9 Ultimate Doom",
-	"BFG edition", "1.666 German",
-	"1.666", "1.7",
-	"1.7A", "1.8",
-	"1.9", "1.0",
-	"1.2", "1.3",
-	"1.0", "1.1",
-	"1.0", "1.1",
-	"1.9", "1.9 Anthology",
-	"1.0", "1.31",
-	"1.9", "1.9 Anthology"
+	PLUTONIA_19,
+	PLUTONIA_19ANTH,
+	PLUTONIA_UNITY,
+	PLUTONIA_KEX,
+	NUM_PLUTONIA_PATCHES
 };
 
+enum TntPatch
+{
+	TNT_19,
+	TNT_19ANTH,
+	TNT_UNITY,
+	TNT_KEX,
+	NUM_TNT_PATCHES
+};
+
+enum HereticPatch
+{
+	HERETIC_10,
+	HERETIC_12,
+	HERETIC_13,
+	NUM_HERETIC_PATCHES
+};
+
+enum HexenPatch
+{
+	HEXEN_10,
+	HEXEN_11,
+	NUM_HEXEN_PATCHES
+};
+
+enum HexddPatch
+{
+	HEXDD_10,
+	HEXDD_11,
+	NUM_HEXDD_PATCHES
+};
+
+enum Strife1Patch
+{
+	STRIFE1_10,
+	STRIFE1_131,
+	NUM_STRIFE1_PATCHES
+};
+
+/*
+ * To obtain ctrl, diff and xtra sizes just pass the patch file only to bspatch
+ * from the bsdifflib tools.
+ */
 typedef struct
 {
 	int ctrl;
@@ -147,75 +137,180 @@ typedef struct
 	int xtra;
 } ptch_sz;
 
-static ptch_sz uncompr_patch_sizes[NUM_PATCHES] =
+typedef struct
 {
-	/*  0 */ {  44856, 12424497,   63327 },
-	/*  1 */ { 243864, 10154196,  242058 },
-	/*  2 */ {  52512, 10311937,   87379 },
-	/*  3 */ { 191712, 10984549,  175291 },
-	/*  4 */ {     24, 11159840,       0 },
-	/*  5 */ {     24, 11159840,       0 },
-	/*  6 */ { 334752, 11844269,  564023 },
-	/*  7 */ {  73104, 14569157,  122664 },
-	/*  8 */ { 316968, 14451304,  373412 },
-	/*  9 */ {  31680, 14911693,   31707 },
-	/* 10 */ {   6312, 14607013,    5675 },
-	/* 11 */ {     24, 14612688,       0 },
-	/* 12 */ {     24, 14612688,       0 },
-	/* 13 */ {  26856, 14584834,   19750 },
-	/* 14 */ {  48600, 11062796,   33692 },
-	/* 15 */ {   8232, 11091117,    4399 },
-	/* 16 */ { 541464, 12915153, 1274823 },
-	/* 17 */ {  45120, 20075266,   53126 },
-	/* 18 */ {  55224, 20051982,   31690 },
-	/* 19 */ {     72,  4429700,       0 },
-	/* 20 */ {   5904,  4432819,    7765 },
-	/* 21 */ {     24, 18195736,       0 },
-	/* 22 */ {  13680, 18645995,    8801 },
-	/* 23 */ { 202776, 27873075,  499093 },
-	/* 24 */ { 192816, 27878717,  498647 },
-	/* 25 */ {     24, 17420824,       0 },
-	/* 26 */ {   1080, 18239811,     361 }
-};
+	const char *patchName;
+	const char *versionStr;
+	const char *patchMD5;
+	unsigned char *patchData;
+	unsigned int patchLen;
+	ptch_sz uncompr_patch_sizes;
+} iwad_patch_info;
+
+/*
+ * A patch e.g. DOOM_1666 will patch from (the previous) version 1.2 to 1.666.
+ * The first patch e.g. DOOM_11 will patch from version Unity to 1.1.
+ */
+static iwad_patch_info patchDoom[NUM_DOOM_PATCHES] =
+	{
+		{"DOOM_11", "1.1", "981b03e6d1dc033301aa3095acc437ce",
+		 DOOM_11_data, DOOM_11_len, {271968, 10154097, 242157}},
+		{"DOOM_12", "1.2", "792fd1fea023d61210857089a7c1e351",
+		 DOOM_12_data, DOOM_12_len, {52512, 10311937, 87379}},
+		{"DOOM_1666", "1.666", "54978d12de87f162b9bcc011676cb3c0",
+		 DOOM_1666_data, DOOM_1666_len, {191712, 10984549, 175291}},
+		{"DOOM_18", "1.8", "11e1cd216801ea2657723abc86ecb01f",
+		 DOOM_18_data, DOOM_18_len, {24, 11159840, 0}},
+		{"DOOM_19", "1.9", "1cd63c5ddff1bf8ce844237f580e9cf3",
+		 DOOM_19_data, DOOM_19_len, {24, 11159840, 0}},
+		{"DOOM_19UD", "1.9 Ultimate Doom", "c4fe9fd920207691a9f493668e0a2083",
+		 DOOM_19UD_data, DOOM_19UD_len, {334752, 11844269, 564023}},
+		{"DOOM_BFG", "BFG edition", "fb35c4a5a9fd49ec29ab6e900572c524",
+		 DOOM_BFG_data, DOOM_BFG_len, {44856, 12424497, 63327}},
+		{"DOOM_ETERNAL", "Eternal (PSN)", "e4f120eab6fb410a5b6e11c947832357",
+		 DOOM_ETERNAL_data, DOOM_ETERNAL_len, {936, 12474410, 151}},
+		{"DOOM_UNITY", "Unity 1.3", "8517c4e8f0eef90b82852667d345eb86",
+		 DOOM_UNITY_data, DOOM_UNITY_len, {194616, 12548140, 154781}},
+		{"DOOM_KEX", "KEX (2024)", "4461d4511386518e784c647e3128e7bc",
+		 DOOM_KEX_data, DOOM_KEX_len, {37320, 12715838, 17654}}
+	};
+
+static iwad_patch_info patchDoom2[NUM_DOOM2_PATCHES] =
+	{
+		{"DOOM2_1666G", "1.666 German", "d9153ced9fd5b898b36cc5844e35b520",
+		 DOOM2_1666G_data, DOOM2_1666G_len, {225264, 14612783, 211933}},
+		{"DOOM2_1666", "1.666", "30e3c2d0350b67bfbf47271970b74b2f",
+		 DOOM2_1666_data, DOOM2_1666_len, {31680, 14911693, 31707}},
+		{"DOOM2_17", "1.7", "ea74a47a791fdef2e9f2ea8b8a9da13b",
+		 DOOM2_17_data, DOOM2_17_len, {6312, 14607013, 5675}},
+		{"DOOM2_17A", "1.7A", "d7a07e5d3f4625074312bc299d7ed33f",
+		 DOOM2_17A_data, DOOM2_17A_len, {24, 14612688, 0}},
+		{"DOOM2_18", "1.8", "c236745bb01d89bbb866c8fed81b6f8c",
+		 DOOM2_18_data, DOOM2_18_len, {24, 14612688, 0}},
+		{"DOOM2_19", "1.9", "25e1459ca71d321525f84628f45ca8cd",
+		 DOOM2_19_data, DOOM2_19_len, {26856, 14584834, 19750}},
+		{"DOOM2_BFG", "BFG edition", "c3bea40570c23e511a7ed3ebcd9865f7",
+		 DOOM2_BFG_data, DOOM2_BFG_len, {73104, 14569157, 122664}},
+		{"DOOM2_ETERNAL", "Eternal (Bethesda.net)", "97573aaf26957099ed45e61d81a0a1a3",
+		 DOOM2_ETERNAL_data, DOOM2_ETERNAL_len, {37656, 14548287, 54925}},
+		{"DOOM2_UNITY", "Unity 1.3", "8ab6d0527a29efdc1ef200e5687b5cae",
+		 DOOM2_UNITY_data, DOOM2_UNITY_len, {242856, 14558806, 244037}},
+		{"DOOM2_KEX", "KEX (2024)", "9aa3cbf65b961d0bdac98ec403b832e1",
+		 DOOM2_KEX_data, DOOM2_KEX_len, {13152, 14767338, 35168}}
+	};
+
+static iwad_patch_info patchPlutonia[NUM_PLUTONIA_PATCHES] =
+	{
+		{"PLUTONIA_19", "1.9", "75c8cf89566741fa9d22447604053bd7",
+		 PLUTONIA_19_data, PLUTONIA_19_len, {83112, 17409678, 11146}},
+		{"PLUTONIA_19ANTH", "1.9 Anthology", "3493be7e1e2588bc9c8b31eab2587a04",
+		 PLUTONIA_19ANTH_data, PLUTONIA_19ANTH_len, {1080, 18239811, 361}},
+		{"PLUTONIA_UNITY", "Unity 1.3", "ae76c20366ff685d3bb9fab11b148b84",
+		 PLUTONIA_UNITY_data, PLUTONIA_UNITY_len, {140280, 17447083, 70103}},
+		{"PLUTONIA_KEX", "KEX (2024)", "24037397056e919961005e08611623f4",
+		 PLUTONIA_KEX_data, PLUTONIA_KEX_len, {4272, 17517391, 14102}}
+	};
+
+static iwad_patch_info patchTnt[NUM_TNT_PATCHES] =
+	{
+		{"TNT_19", "1.9", "4e158d9953c79ccf97bd0663244cc6b6",
+		 TNT_19_data, TNT_19_len, {90000, 18176539, 19197}},
+		{"TNT_19ANTH", "1.9 Anthology", "1d39e405bf6ee3df69a8d2646c8d5c49",
+		 TNT_19ANTH_data, TNT_19ANTH_len, {13680, 18645995, 8801}},
+		{"TNT_UNITY", "Unity 1.3", "f5528f6fd55cf9629141d79eda169630",
+		 TNT_UNITY_data, TNT_UNITY_len, {137352, 17731162, 798722}},
+		{"TNT_KEX", "KEX (2024)", "8974e3117ed4a1839c752d5e11ab1b7b",
+		 TNT_KEX_data, TNT_KEX_len, {4104, 17784117, 520513}}
+	};
+
+static iwad_patch_info patchHeretic[NUM_HERETIC_PATCHES] =
+	{
+		{"HERETIC_10", "1.0", "3117e399cdb4298eaa3941625f4b2923",
+		 HERETIC_10_data, HERETIC_10_len, {48600, 11062796, 33692}},
+		{"HERETIC_12", "1.2", "1e4cb4ef075ad344dd63971637307e04",
+		 HERETIC_12_data, HERETIC_12_len, {8232, 11091117, 4399}},
+		{"HERETIC_13", "1.3", "66d686b1ed6d35ff103f15dbd30e0341",
+		 HERETIC_13_data, HERETIC_13_len, {541464, 12915153, 1274823}}
+	};
+
+static iwad_patch_info patchHexen[NUM_HEXEN_PATCHES] =
+	{
+		{"HEXEN_10", "1.0", "b2543a03521365261d0a0f74d5dd90f0",
+		 HEXEN_10_data, HEXEN_10_len, {45120, 20075266, 53126}},
+		{"HEXEN_11", "1.1", "abb033caf81e26f12a2103e1fa25453f",
+		 HEXEN_11_data, HEXEN_11_len, {55224, 20051982, 31690}}
+	};
+
+static iwad_patch_info patchHexdd[NUM_HEXDD_PATCHES] =
+	{
+		{"HEXDD_10", "1.0", "1077432e2690d390c256ac908b5f4efa",
+		 HEXDD_10_data, HEXDD_10_len, {72, 4429700, 0}},
+		{"HEXDD_11", "1.1", "78d5898e99e220e4de64edaa0e479593",
+		 HEXDD_11_data, HEXDD_11_len, {5904, 4432819, 7765}}
+	};
+
+static iwad_patch_info patchStrife1[NUM_STRIFE1_PATCHES] =
+	{
+		{"STRIFE1_10", "1.0", "8f2d3a6a289f5d2f2f9c1eec02b47299",
+		 STRIFE1_10_data, STRIFE1_10_len, {202776, 27873075, 499093}},
+		{"STRIFE1_131", "1.2/1.31", "2fed2031a5b03892106e0f117f17901f",
+		 STRIFE1_131_data, STRIFE1_131_len, {192816, 27878717, 498647}}
+	};
 
 enum IWAD
 {
-	DOOM = 0, DOOM2,
-	HERETIC, HEXEN,
-	HEXDD, TNT,
-	STRIFE1, PLUTONIA
+	DOOM,
+	DOOM2,
+	PLUTONIA,
+	TNT,
+	HERETIC,
+	HEXEN,
+	HEXDD,
+	STRIFE1,
+	NUM_IWAD
 };
 
-static const char* iwadName[] =
+typedef struct
 {
-	"DOOM.WAD",		"DOOM2.WAD",
-	"HERETIC.WAD",	"HEXEN.WAD",
-	"HEXDD.WAD",	"TNT.WAD",
-	"STRIFE1.WAD",	"PLUTONIA.WAD"
-};
+	const char *iwadName;
+	int numPatches;
+	iwad_patch_info *patchInfo;
+} iwad_info;
+
+static iwad_info iwad[] =
+	{
+		{"DOOM.WAD", NUM_DOOM_PATCHES, patchDoom},
+		{"DOOM2.WAD", NUM_DOOM2_PATCHES, patchDoom2},
+		{"PLUTONIA.WAD", NUM_PLUTONIA_PATCHES, patchPlutonia},
+		{"TNT.WAD", NUM_TNT_PATCHES, patchTnt},
+		{"HERETIC.WAD", NUM_HERETIC_PATCHES, patchHeretic},
+		{"HEXEN.WAD", NUM_HEXEN_PATCHES, patchHexen},
+		{"HEXDD.WAD", NUM_HEXDD_PATCHES, patchHexdd},
+		{"STRIFE1.WAD", NUM_STRIFE1_PATCHES, patchStrife1}
+	};
 
 /***************************************************************************/
 
 static int MD5hash(const char *fname, char *md5string)
 {
-	FILE		*f;
-	int			i, nread;
-	md5_state_t	state;
-	md5_byte_t	digest[16];
-	md5_byte_t	buf[8192];
+	FILE *f;
+	int i, nread;
+	md5_state_t state;
+	md5_byte_t digest[16];
+	md5_byte_t buf[8192];
 
-	if ( (f=fopen(fname,"rb")) == NULL )
+	if ((f = fopen(fname, "rb")) == NULL)
 		return 0;
 
 	md5_init(&state);
 
-	while ( (nread=(int)fread(buf,1,sizeof(buf),f)) > 0 )
+	while ((nread = (int)fread(buf, 1, sizeof(buf), f)) > 0)
 		md5_append(&state, buf, nread);
 
 	fclose(f);
 	md5_finish(&state, digest);
 
-	for (i=0; i<16; i++)
+	for (i = 0; i < 16; i++)
 		sprintf(md5string + i * 2, "%02x", digest[i]);
 
 	return 1;
@@ -231,12 +326,12 @@ static int suffixstricmp(const char *s1, const char *s2)
 	size_t s2_len = strlen(s2);
 	int res = -1;
 
-	if (s1_len<s2_len)
+	if (s1_len < s2_len)
 		return res;
 
-	for(i=0; i<s2_len; ++i)
+	for (i = 0; i < s2_len; ++i)
 	{
-		if ((res = tolower(s1[s1_len-s2_len+i])-tolower(s2[i])) != 0)
+		if ((res = tolower(s1[s1_len - s2_len + i]) - tolower(s2[i])) != 0)
 			break;
 	}
 
@@ -245,172 +340,114 @@ static int suffixstricmp(const char *s1, const char *s2)
 
 /***************************************************************************/
 
-static int check_iwadname (const char *iwadfile)
+static int check_iwadMD5(int *game, const char *md5string)
 {
-	if (!suffixstricmp(iwadfile, iwadName[DOOM])) return DOOM;
-	if (!suffixstricmp(iwadfile, iwadName[DOOM2])) return DOOM2;
-	if (!suffixstricmp(iwadfile, iwadName[HERETIC])) return HERETIC;
-	if (!suffixstricmp(iwadfile, iwadName[HEXEN])) return HEXEN;
-	if (!suffixstricmp(iwadfile, iwadName[HEXDD])) return HEXDD;
-	if (!suffixstricmp(iwadfile, iwadName[TNT])) return TNT;
-	if (!suffixstricmp(iwadfile, iwadName[STRIFE1])) return STRIFE1;
-	if (!suffixstricmp(iwadfile, iwadName[PLUTONIA])) return PLUTONIA;
-
-	return -1;
-}
-
-/***************************************************************************/
-
-static int check_iwadMD5 (int game, const char *md5string)
-{
-	int i;
+	int i, j;
 	int res = -1;
 
-	for (i=0; i<NUM_PATCHES; ++i)
-	{
-		if (!strcmp(patchMD5[i],md5string))
+	for (i = 0; i < NUM_IWAD; ++i)
+		for (j = 0; j < iwad[i].numPatches; ++j)
 		{
-			res = i;
-			break;
+			if (!strcmp(iwad[i].patchInfo[j].patchMD5, md5string))
+			{
+				res = j;
+				*game = i;
+				break;
+			}
 		}
-	}
 
-	if ( ((game == DOOM) && (res>=0 && res<=6)) || ((game == DOOM2) && (res>=7 && res<=13))
-	        || ((game == HERETIC) && (res>=14 && res<=16)) || ((game == HEXEN) && (res>=17 && res<=18))
-	        || ((game == HEXDD) && (res>=19 && res<=20)) || ((game == TNT) && (res>=21 && res<=22))
-	        || ((game == STRIFE1) && (res>=23 && res<=24)) || ((game == PLUTONIA) && (res>=25 && res<=26)) )
-	{
-		return res;
-	}
-
-	return -1;
+	return res;
 }
 
 /***************************************************************************/
 
-static int check_version (int game, const char *version)
+static int check_version(int game, const char *version)
 {
-	int		i, res;
+	int i, res;
 
-	if (version==NULL)
+	if (version == NULL)
 	{
-		if (game == DOOM) return 6;
-		if (game == DOOM2) return 13;
-		if (game == HERETIC) return 16;
-		if (game == HEXEN) return 18;
-		if (game == HEXDD) return 20;
-		if (game == TNT) return 22;
-		if (game == STRIFE1) return 24;
-		if (game == PLUTONIA) return 26;
+		if (game == DOOM)
+			return DEFAULT_PATCH_DOOM;
+		if (game == DOOM2)
+			return DEFAULT_PATCH_DOOM2;
+		if (game == PLUTONIA)
+			return DEFAULT_PATCH_PLUTONIA;
+		if (game == TNT)
+			return DEFAULT_PATCH_TNT;
+		if (game == HERETIC)
+			return DEFAULT_PATCH_HERETIC;
+		if (game == HEXEN)
+			return DEFAULT_PATCH_HEXEN;
+		if (game == HEXDD)
+			return DEFAULT_PATCH_HEXDD;
+		if (game == STRIFE1)
+			return DEFAULT_PATCH_STRIFE1;
 	}
 
 	res = -1;
 
-	for (i=NUM_PATCHES-1; i>=0; i--)
+	for (i = 0; i < iwad[game].numPatches; ++i)
 	{
-		if (!suffixstricmp(patchName[i],version))
+		if (!suffixstricmp(iwad[game].patchInfo[i].patchName, version))
 		{
 			res = i;
 			break;
 		}
 	}
 
-	if (i<0)
-		return -1;
-
-	if ( ((game == DOOM) && (res>=0 && res<=6)) || ((game == DOOM2) && (res>=7 && res<=13))
-	        || ((game == HERETIC) && (res>=14 && res<=16)) || ((game == HEXEN) && (res>=17 && res<=18))
-	        || ((game == HEXDD) && (res>=19 && res<=20)) || ((game == TNT) && (res>=21 && res<=22))
-	        || ((game == STRIFE1) && (res>=23 && res<=24)) || ((game == PLUTONIA) && (res>=25 && res<=26)) )
-	{
-		return res;
-	}
-
-	return -1;
-}
-
-/***************************************************************************/
-
-static int next_patch(int p)
-{
-	if (p<0 || p>=NUM_PATCHES)
-		return -1;
-
-	if (p == 6)	return 0;
-	if (p == 13) return 7;
-	if (p == 16) return 14;
-	if (p == 18) return 17;
-	if (p == 20) return 19;
-	if (p == 22) return 21;
-	if (p == 24) return 23;
-	if (p == 26) return 25;
-
-	return ++p;
+	return res;
 }
 
 /***************************************************************************/
 
 static int patch_aux(const char *infile, const char *outfile,
-                     int backup, const char *version, char **msg)
+					 int backup, const char *version, char **msg)
 {
-	unsigned char	*in_buf, *out_buf;
-	int				in_sz, out_sz, game, init_ver, cur_ver, fin_ver;
-	char			*errs, iwad_date[32], iwad_hash[16*2 + 1], bakname[PATH_MAX+1];
-	static char		msgstr[512+PATH_MAX];
+	unsigned char *in_buf, *out_buf;
+	int in_sz, out_sz, game, init_ver, cur_ver, fin_ver, default_name;
+	char *errs, iwad_hash[16 * 2 + 1], bakname[PATH_MAX + 1];
+	static char msgstr[MSGSTR_MAX_LEN];
 
-	if (!infile || *infile=='\0')
+	if (!infile || *infile == '\0')
 	{
-		sprintf(msgstr,"No IWAD file specified.");
+		snprintf(msgstr, MSGSTR_MAX_LEN, "No IWAD file specified.");
 		*msg = msgstr;
 		return 0;
 	}
 
-	if ( (game=check_iwadname(infile)) == -1 )
+	if (!MD5hash(infile, iwad_hash))
 	{
-		sprintf(msgstr,"\"%s\" is not a registered IWAD name.", infile);
+		snprintf(msgstr, MSGSTR_MAX_LEN, "Cannot compute MD5 Hash for %s.", infile);
 		*msg = msgstr;
 		return 0;
 	}
 
-	if ( !MD5hash(infile, iwad_hash) )
+	if ((init_ver = cur_ver = check_iwadMD5(&game, iwad_hash)) == -1)
 	{
-		sprintf(msgstr,"Cannot compute MD5 Hash from %s .", iwadName[game]);
+		snprintf(msgstr, MSGSTR_MAX_LEN, "Cannot patch unknown %s version.", infile);
 		*msg = msgstr;
 		return 0;
 	}
 
-	if ( (init_ver=cur_ver=check_iwadMD5(game,iwad_hash)) == -1 )
-	{
-		sprintf(msgstr,"Cannot patch unknown %s version.", iwadName[game]);
-		*msg = msgstr;
-		return 0;
-	}
+	default_name = !suffixstricmp(iwad[game].iwadName, infile);
 
-	/* piracy check */
-	if (game==DOOM2)
+	if ((fin_ver = check_version(game, version)) == -1)
 	{
-		struct stat s;
-		stat(infile, &s);
-		strftime(iwad_date, 20, "%d-%m-%Y", localtime( &s.st_mtime));
-
-		if (!strcmp(iwad_date,"25-08-1994"))
-		{
-			sprintf(msgstr,"Cannot patch pirated DOOM2.WAD. Buy the game!");
-			*msg = msgstr;
-			return 0;
-		}
-	}
-
-	if ( (fin_ver=check_version(game,version)) == -1 )
-	{
-		sprintf(msgstr,"Incompatible or unknown patch requested for %s .", iwadName[game]);
+		if (default_name)
+			snprintf(msgstr, MSGSTR_MAX_LEN, "Incompatible or unknown patch requested for %s.", iwad[game].iwadName);
+		else
+			snprintf(msgstr, MSGSTR_MAX_LEN, "Incompatible or unknown patch requested for %s (%s).", iwad[game].iwadName, infile);
 		*msg = msgstr;
 		return 0;
 	}
 
 	if (init_ver == fin_ver)
 	{
-		sprintf(msgstr, "%s is already at version %s" ,iwadName[game], patchVersion[fin_ver]);
+		if (default_name)
+			snprintf(msgstr, MSGSTR_MAX_LEN, "%s is already at version %s.", iwad[game].iwadName, iwad[game].patchInfo[fin_ver].versionStr);
+		else
+			snprintf(msgstr, MSGSTR_MAX_LEN, "%s (%s) is already at version %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[fin_ver].versionStr);
 		*msg = msgstr;
 		return 0;
 	}
@@ -426,10 +463,10 @@ static int patch_aux(const char *infile, const char *outfile,
 	/* Patching loop */
 	do
 	{
-		cur_ver = next_patch(cur_ver);
-		errs = bspatch_mem(in_buf, in_sz, &out_buf, &out_sz, patchData[cur_ver], patchLen[cur_ver],
-		                   uncompr_patch_sizes[cur_ver].ctrl, uncompr_patch_sizes[cur_ver].diff,
-		                   uncompr_patch_sizes[cur_ver].xtra);
+		cur_ver = (cur_ver + 1) % iwad[game].numPatches;
+		errs = bspatch_mem(in_buf, in_sz, &out_buf, &out_sz, iwad[game].patchInfo[cur_ver].patchData, iwad[game].patchInfo[cur_ver].patchLen,
+						   iwad[game].patchInfo[cur_ver].uncompr_patch_sizes.ctrl, iwad[game].patchInfo[cur_ver].uncompr_patch_sizes.diff,
+						   iwad[game].patchInfo[cur_ver].uncompr_patch_sizes.xtra);
 		free(in_buf);
 
 		if (errs)
@@ -443,8 +480,7 @@ static int patch_aux(const char *infile, const char *outfile,
 		in_sz = out_sz;
 		out_buf = NULL;
 		out_sz = 0;
-	}
-	while ( cur_ver != fin_ver );
+	} while (cur_ver != fin_ver);
 
 	if (outfile && *outfile)
 	{
@@ -454,15 +490,25 @@ static int patch_aux(const char *infile, const char *outfile,
 	{
 		if (backup)
 		{
-			sprintf(bakname,"%s.bak",infile);
-			rename(infile,bakname);
+			snprintf(bakname, PATH_MAX + 1, "%s.bak", infile);
+			if (rename(infile, bakname) == -1)
+			{
+				snprintf(msgstr, MSGSTR_MAX_LEN, "Could not rename %s to %s.", infile, bakname);
+				*msg = msgstr;
+				return 0;
+			}
 		}
 
 		mem_to_file(in_buf, in_sz, infile);
 	}
 
 	free(in_buf);
-	sprintf(msgstr, "%s %s patched to %s.", iwadName[game], patchVersion[init_ver], patchVersion[fin_ver]);
+	if (default_name)
+		snprintf(msgstr, MSGSTR_MAX_LEN, "%s %s patched to %s.", iwad[game].iwadName, iwad[game].patchInfo[init_ver].versionStr,
+				 iwad[game].patchInfo[fin_ver].versionStr);
+	else
+		snprintf(msgstr, MSGSTR_MAX_LEN, "%s (%s) %s patched to %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[init_ver].versionStr,
+				 iwad[game].patchInfo[fin_ver].versionStr);
 	*msg = msgstr;
 	return 1;
 }
@@ -476,7 +522,7 @@ int WINAPI patch_iwad(const char *iwadfile, int backup, char **msg)
 
 /***************************************************************************/
 
-int WINAPI patch_iwad_to(const char *iwadfile,int backup,const char *version, char **msg)
+int WINAPI patch_iwad_to(const char *iwadfile, int backup, const char *version, char **msg)
 {
 	return patch_aux(iwadfile, NULL, backup, version, msg);
 }
@@ -499,21 +545,21 @@ int WINAPI patch_iwad_to2(const char *infile, const char *outfile, const char *v
 
 #if DLL
 
-BOOL WINAPI _CRT_INIT(HINSTANCE,DWORD,LPVOID);
+BOOL WINAPI _CRT_INIT(HINSTANCE, DWORD, LPVOID);
 
-BOOL WINAPI DllEntryPoint(HINSTANCE hinst,DWORD reason,LPVOID p)
+BOOL WINAPI DllEntryPoint(HINSTANCE hinst, DWORD reason, LPVOID p)
 {
-	if (reason==DLL_PROCESS_ATTACH || reason==DLL_THREAD_ATTACH)
+	if (reason == DLL_PROCESS_ATTACH || reason == DLL_THREAD_ATTACH)
 	{
-		if(!_CRT_INIT(hinst,reason,p))
+		if (!_CRT_INIT(hinst, reason, p))
 		{
 			return FALSE;
 		}
 	}
 
-	if (reason==DLL_PROCESS_DETACH || reason==DLL_THREAD_DETACH)
+	if (reason == DLL_PROCESS_DETACH || reason == DLL_THREAD_DETACH)
 	{
-		if (!_CRT_INIT(hinst,reason,p))
+		if (!_CRT_INIT(hinst, reason, p))
 		{
 			return FALSE;
 		}

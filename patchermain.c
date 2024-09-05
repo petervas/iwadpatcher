@@ -1,5 +1,5 @@
 /*-
- * Copyright 2012, Peter Vaskovic, (petervaskovic@yahoo.de)
+ * Copyright 2024, Peter Vaskovic, (petervaskovic@yahoo.de)
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,9 @@
 
 #include <stdio.h>
 #include "iwadpatcher.h"
+
+#define xstr(a) str(a)
+#define str(a) #a
 
 int main(int argc,char * argv[])
 {
@@ -69,48 +72,61 @@ int main(int argc,char * argv[])
 	if (output_file && *output_file)
 	{
 		ok = (version && *version) ?
-		     patch_iwad_to2(argv[i+1], output_file, version, &msg) :
-		     patch_iwad2(argv[i+1], output_file, &msg);
+			 patch_iwad_to2(argv[i+1], output_file, version, &msg) :
+			 patch_iwad2(argv[i+1], output_file, &msg);
 	}
 	else
 	{
 		ok = (version && *version) ?
-		     patch_iwad_to(argv[i+1], 1, version, &msg) :
-		     patch_iwad(argv[i+1], 1, &msg);
+			 patch_iwad_to(argv[i+1], 1, version, &msg) :
+			 patch_iwad(argv[i+1], 1, &msg);
 	}
 
 	printf("%s\n",msg);
 	return !ok;
 USAGE:
 	printf( "\n"
-	        "Usage: iwadpatcher [-Ooutputfile] [-Vdesired_version] iwadfile\n"
-	        "\n"
-	        "Modifies (patches) IWADs enabling you to change their version in\n"
-	        "ANY DIRECTION that you like (either forward or backward).\n"
-	        "\n"
-	        "Supported IWADs:\n"
-	        "\tdoom.wad, doom2.wad, heretic.wad, hexen.wad,\n"
-	        "\thexdd.wad, tnt.wad, plutonia.wad, strife1.wad.\n"
-	        "\n"
-	        "Valid version strings:\n"
-	        "\tFor Doom:     \"DOOM_BFG\",    \"DOOM_11\",     \"DOOM_12\",\n"
-	        "\t              \"DOOM_1666\",   \"DOOM_18\",     \"DOOM_19\",\n"
-            "\t              \"DOOM_19UD\"\n"
-	        "\tFor Doom2:    \"DOOM2_BFG\",   \"DOOM2_1666G\", \"DOOM2_1666\",\n"
-	        "\t              \"DOOM2_17\",    \"DOOM2_17A\",   \"DOOM2_18\",\n"
-            "\t              \"DOOM2_19\"\n"			
-	        "\tFor Heretic:  \"HERETIC_10\",  \"HERETIC_12\",  \"HERETIC_13\"\n"
-	        "\tFor Hexen:    \"HEXEN_10\",    \"HEXEN_11\"\n"
-	        "\tFor HexDD:    \"HEXDD_10\",    \"HEXDD_11\"\n"
-	        "\tFor TNT:      \"TNT_19\",      \"TNT_19ANTH\"\n"
-	        "\tFor Plutonia: \"PLUTONIA_19\", \"PLUTONIA_19ANTH\"\n"
-	        "\tFor Strife:   \"STRIFE1_10\",  \"STRIFE1_131\"\n"
-	        "\n"
-	        "If no version string is specified, it defaults to the latest one\n"
-	        "for the given IWAD. Notice that the BFG editions are NOT considered\n"
-			"to be the latest IWAD versions!\n"
-	        "\n"
-	        "Version: 1.2 (2012-10-20)\n"
-	      );
+			"Usage: iwadpatcher [-Ooutputfile] [-Vdesired_version] iwadfile\n"
+			"Patch IWADs to any official PC version.\n"
+			"\n"
+			"Example: iwadpatcher -ODOOM2_PATCHED.WAD -VDOOM2_19 DOOM2.WAD\n"
+			"     or: iwadpatcher -VHERETIC_12 HERETIC.WAD\n"
+			"     or: iwadpatcher DOOM.WAD\n"
+			"\n"
+			"Supported IWADs:\n"
+			"\tDOOM.WAD, DOOM2.WAD, PLUTONIA.WAD, TNT.WAD,\n"
+			"\tHERETIC.WAD, HEXEN.WAD, HEXDD.WAD, STRIFE1.WAD\n"
+			"\n"
+			"Valid version strings:\n"
+			"\tDOOM:     DOOM_11,     DOOM_12,     DOOM_1666,\n"
+			"\t          DOOM_18,     DOOM_19,     DOOM_19UD,\n"
+			"\t          DOOM_BFG,    DOOM_ETERNAL,\n"
+			"\t          DOOM_UNITY   DOOM_KEX\n"
+			"\tDOOM2:    DOOM2_1666G, DOOM2_1666,  DOOM2_17,\n"
+			"\t          DOOM2_17A,   DOOM2_18,    DOOM2_19,\n"
+			"\t          DOOM2_BFG,   DOOM2_ETERNAL,\n"
+			"\t          DOOM2_UNITY  DOOM2_KEX\n"
+			"\tPLUTONIA: PLUTONIA_19, PLUTONIA_19ANTH,\n"
+			"\t          PLUTONIA_UNITY\n"
+			"\t          PLUTONIA_KEX\n"
+			"\tTNT:      TNT_19,      TNT_19ANTH,  TNT_UNITY\n"
+			"\t          TNT_KEX\n"
+			"\tHERETIC:  HERETIC_10,  HERETIC_12,  HERETIC_13\n"
+			"\tHEXEN:    HEXEN_10,    HEXEN_11\n"
+			"\tHEXDD:    HEXDD_10,    HEXDD_11\n"
+			"\tSTRIFE1:  STRIFE1_10,  STRIFE1_131\n"
+			"\n"
+			"If no version is specified, the default will be:\n"
+			"\tDOOM:     " xstr(DEFAULT_PATCH_DOOM) "\n"
+			"\tDOOM2:    " xstr(DEFAULT_PATCH_DOOM2) "\n"
+			"\tPLUTONIA: " xstr(DEFAULT_PATCH_PLUTONIA) "\n"
+			"\tTNT:      " xstr(DEFAULT_PATCH_TNT) "\n"
+			"\tHERETIC:  " xstr(DEFAULT_PATCH_HERETIC) "\n"
+			"\tHEXEN:    " xstr(DEFAULT_PATCH_HEXEN) "\n"
+			"\tHEXDD:    " xstr(DEFAULT_PATCH_HEXDD) "\n"
+			"\tSTRIFE1:  " xstr(DEFAULT_PATCH_STRIFE1) "\n"
+			"\n"
+			"Version: 1.3 (2024-09-05)\n"
+			);
 	return 1;
 }
