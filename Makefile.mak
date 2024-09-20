@@ -4,13 +4,13 @@
 CC = cl
 
 # Compiler flags
-CFLAGS = /nologo /W3 /Ibzip2 /Ibsdifflib /D_WIN32 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_SECURE_NO_WARNINGS
+CFLAGS = /nologo /O2 /W3 /Ibzip2 /Ibsdifflib /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_SECURE_NO_WARNINGS
 
 # Linker
 LINK = link
 
 # Linker flags
-LFLAGS = /nologo /MANIFEST
+LFLAGS = /nologo /MANIFEST:EMBED /MANIFESTUAC:"level='asInvoker' uiAccess='false'"
 
 # Source files
 IWADPATCHER_SRCS = patchermain.c iwadpatcher.c md5.c patches.c
@@ -35,4 +35,4 @@ iwadpatcher.exe: $(IWADPATCHER_OBJS) $(BSDIFF_OBJS) $(BZIP2_OBJS)
 
 # Clean target
 clean:
-	del /Q /F iwadpatcher.exe $(BSPATCH_OBJS) $(BZIP2_OBJS) $(IWADPATCHER_OBJS) 
+	del /Q /F iwadpatcher.exe $(BSDIFF_OBJS) $(BZIP2_OBJS) $(IWADPATCHER_OBJS)
