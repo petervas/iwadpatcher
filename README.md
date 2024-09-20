@@ -14,7 +14,7 @@ available at http://userpages.umbc.edu/~mabzug1/cs/md5/md5.html
 
 I would like to thank Hippocrates Sendoukas for helping me out with some
 C related questions and giving me helpful coding suggestions in general.
-You can visit his site at http://hs.keystone.gr/
+You can visit his site at http://hs.zdaemon.org/
 
 Compile:
 

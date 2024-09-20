@@ -33,7 +33,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#if _WIN32
+#if defined(_WIN32)
 #include <windows.h>
 #include <io.h>
 #endif
@@ -48,6 +48,10 @@
 #endif
 
 #define MSGSTR_MAX_LEN 512 + PATH_MAX
+
+#if defined(_MSC_VER) && _MSC_VER<1900		//VS before 2015
+	#define snprintf	_snprintf
+#endif
 
 enum DoomPatch
 {
@@ -423,6 +427,7 @@ static int patch_aux(const char *infile, const char *outfile,
 		return 0;
 	}
 
+	game = 0;
 	if ((init_ver = cur_ver = check_iwadMD5(&game, iwad_hash)) == -1)
 	{
 		snprintf(msgstr, MSGSTR_MAX_LEN, "Cannot patch unknown %s version.", infile);
