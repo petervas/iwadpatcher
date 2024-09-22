@@ -1,7 +1,7 @@
 #ifndef IWADPATCHERH__
 #define IWADPATCHERH__
 /*-
- * Copyright 2023, Peter Vaskovic, (petervaskovic@yahoo.de)
+ * Copyright 2024, Peter Vaskovic, (petervaskovic@yahoo.de)
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without

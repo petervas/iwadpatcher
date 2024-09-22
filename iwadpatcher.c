@@ -1,5 +1,5 @@
 /*-
- * Copyright 2023, Peter Vaskovic, (petervaskovic@yahoo.de)
+ * Copyright 2024, Peter Vaskovic, (petervaskovic@yahoo.de)
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,7 +147,7 @@ typedef struct
 	const char *versionStr;
 	const char *patchMD5;
 	unsigned char *patchData;
-	unsigned int patchLen;
+	int patchLen;
 	ptch_sz uncompr_patch_sizes;
 } iwad_patch_info;
 
@@ -308,7 +308,7 @@ static int MD5hash(const char *fname, char *md5string)
 
 	md5_init(&state);
 
-	while ((nread = (int)fread(buf, 1, sizeof(buf), f)) > 0)
+	while ((nread = (int)fread(buf, (size_t)1, sizeof(buf), f)) > 0)
 		md5_append(&state, buf, nread);
 
 	fclose(f);
@@ -415,14 +415,14 @@ static int patch_aux(const char *infile, const char *outfile,
 
 	if (!infile || *infile == '\0')
 	{
-		snprintf(msgstr, MSGSTR_MAX_LEN, "No IWAD file specified.");
+		snprintf(msgstr, sizeof(msgstr), "No IWAD file specified.");
 		*msg = msgstr;
 		return 0;
 	}
 
 	if (!MD5hash(infile, iwad_hash))
 	{
-		snprintf(msgstr, MSGSTR_MAX_LEN, "Cannot compute MD5 Hash for %s.", infile);
+		snprintf(msgstr, sizeof(msgstr), "Cannot compute MD5 Hash for %s.", infile);
 		*msg = msgstr;
 		return 0;
 	}
@@ -430,7 +430,7 @@ static int patch_aux(const char *infile, const char *outfile,
 	game = 0;
 	if ((init_ver = cur_ver = check_iwadMD5(&game, iwad_hash)) == -1)
 	{
-		snprintf(msgstr, MSGSTR_MAX_LEN, "Cannot patch unknown %s version.", infile);
+		snprintf(msgstr, sizeof(msgstr), "Cannot patch unknown %s version.", infile);
 		*msg = msgstr;
 		return 0;
 	}
@@ -440,9 +440,9 @@ static int patch_aux(const char *infile, const char *outfile,
 	if ((fin_ver = check_version(game, version)) == -1)
 	{
 		if (default_name)
-			snprintf(msgstr, MSGSTR_MAX_LEN, "Incompatible or unknown patch requested for %s.", iwad[game].iwadName);
+			snprintf(msgstr, sizeof(msgstr), "Incompatible or unknown patch requested for %s.", iwad[game].iwadName);
 		else
-			snprintf(msgstr, MSGSTR_MAX_LEN, "Incompatible or unknown patch requested for %s (%s).", iwad[game].iwadName, infile);
+			snprintf(msgstr, sizeof(msgstr), "Incompatible or unknown patch requested for %s (%s).", iwad[game].iwadName, infile);
 		*msg = msgstr;
 		return 0;
 	}
@@ -450,9 +450,9 @@ static int patch_aux(const char *infile, const char *outfile,
 	if (init_ver == fin_ver)
 	{
 		if (default_name)
-			snprintf(msgstr, MSGSTR_MAX_LEN, "%s is already at version %s.", iwad[game].iwadName, iwad[game].patchInfo[fin_ver].versionStr);
+			snprintf(msgstr, sizeof(msgstr), "%s is already at version %s.", iwad[game].iwadName, iwad[game].patchInfo[fin_ver].versionStr);
 		else
-			snprintf(msgstr, MSGSTR_MAX_LEN, "%s (%s) is already at version %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[fin_ver].versionStr);
+			snprintf(msgstr, sizeof(msgstr), "%s (%s) is already at version %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[fin_ver].versionStr);
 		*msg = msgstr;
 		return 0;
 	}
@@ -495,10 +495,10 @@ static int patch_aux(const char *infile, const char *outfile,
 	{
 		if (backup)
 		{
-			snprintf(bakname, PATH_MAX + 1, "%s.bak", infile);
+			snprintf(bakname, sizeof(bakname), "%s.bak", infile);
 			if (rename(infile, bakname) == -1)
 			{
-				snprintf(msgstr, MSGSTR_MAX_LEN, "Could not rename %s to %s.", infile, bakname);
+				snprintf(msgstr, sizeof(msgstr), "Could not rename %s to %s.", infile, bakname);
 				*msg = msgstr;
 				return 0;
 			}
@@ -509,10 +509,10 @@ static int patch_aux(const char *infile, const char *outfile,
 
 	free(in_buf);
 	if (default_name)
-		snprintf(msgstr, MSGSTR_MAX_LEN, "%s %s patched to %s.", iwad[game].iwadName, iwad[game].patchInfo[init_ver].versionStr,
+		snprintf(msgstr, sizeof(msgstr), "%s %s patched to %s.", iwad[game].iwadName, iwad[game].patchInfo[init_ver].versionStr,
 				 iwad[game].patchInfo[fin_ver].versionStr);
 	else
-		snprintf(msgstr, MSGSTR_MAX_LEN, "%s (%s) %s patched to %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[init_ver].versionStr,
+		snprintf(msgstr, sizeof(msgstr), "%s (%s) %s patched to %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[init_ver].versionStr,
 				 iwad[game].patchInfo[fin_ver].versionStr);
 	*msg = msgstr;
 	return 1;
@@ -548,7 +548,7 @@ int WINAPI patch_iwad_to2(const char *infile, const char *outfile, const char *v
 
 /***************************************************************************/
 
-#if DLL
+#if defined(DLL)
 
 BOOL WINAPI _CRT_INIT(HINSTANCE, DWORD, LPVOID);
 

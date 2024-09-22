@@ -126,7 +126,7 @@ USAGE:
 			"\tHEXDD:    " xstr(DEFAULT_PATCH_HEXDD) "\n"
 			"\tSTRIFE1:  " xstr(DEFAULT_PATCH_STRIFE1) "\n"
 			"\n"
-			"Version: 1.3 (2024-09-05)\n"
+			"Version: 1.3 (2024-09-22)\n"
 			);
 	return 1;
 }

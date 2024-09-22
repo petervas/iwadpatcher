@@ -1,5 +1,5 @@
 IWadPatcher 1.3
-released on September 5th, 2024
+released on 22 September 2024
 
 IWadPatcher patches any registered IWAD from DOOM, DOOM II, Final DOOM,
 Heretic, Hexen and Strife to the latest or any other official version.
@@ -29,7 +29,7 @@ Compile:
 
 Changelog:
 
-    IWadPatcher 1.3 (5 September 2024)
+    IWadPatcher 1.3 (22 September 2024)
         
         Add support for Unity and KEX edition doom.wad, doom2.wad,
         plutonia.wad and tnt.wad.
