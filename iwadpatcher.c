@@ -412,6 +412,7 @@ static int patch_aux(const char *infile, const char *outfile,
 	int in_sz, out_sz, game, init_ver, cur_ver, fin_ver, default_name;
 	char *errs, iwad_hash[16 * 2 + 1], bakname[PATH_MAX + 1];
 	static char msgstr[MSGSTR_MAX_LEN];
+	FILE *file;
 
 	if (!infile || *infile == '\0')
 	{
@@ -419,6 +420,15 @@ static int patch_aux(const char *infile, const char *outfile,
 		*msg = msgstr;
 		return 0;
 	}
+
+	file = fopen(infile, "rb");
+	if (!file)
+	{
+		snprintf(msgstr, sizeof(msgstr), "Cannot open IWAD file %s.", infile);
+		*msg = msgstr;
+		return 0;
+	}
+	fclose(file);
 
 	if (!MD5hash(infile, iwad_hash))
 	{
