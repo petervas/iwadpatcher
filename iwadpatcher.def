@@ -1,0 +1,6 @@
+LIBRARY		iwadpatcher
+HEAPSIZE	1024
+EXPORTS		patch_iwad
+		patch_iwad_to
+		patch_iwad2
+		patch_iwad_to2
