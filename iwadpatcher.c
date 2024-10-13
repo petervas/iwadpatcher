@@ -158,7 +158,7 @@ typedef struct
 static iwad_patch_info patchDoom[NUM_DOOM_PATCHES] =
 	{
 		{"DOOM_11", "1.1", "981b03e6d1dc033301aa3095acc437ce",
-		 DOOM_11_data, DOOM_11_len, {271968, 10154097, 242157}},
+		 DOOM_11_data, DOOM_11_len, {281928, 10154586, 241668}},
 		{"DOOM_12", "1.2", "792fd1fea023d61210857089a7c1e351",
 		 DOOM_12_data, DOOM_12_len, {52512, 10311937, 87379}},
 		{"DOOM_1666", "1.666", "54978d12de87f162b9bcc011676cb3c0",
@@ -175,14 +175,14 @@ static iwad_patch_info patchDoom[NUM_DOOM_PATCHES] =
 		 DOOM_ETERNAL_data, DOOM_ETERNAL_len, {936, 12474410, 151}},
 		{"DOOM_UNITY", "Unity 1.3", "8517c4e8f0eef90b82852667d345eb86",
 		 DOOM_UNITY_data, DOOM_UNITY_len, {194616, 12548140, 154781}},
-		{"DOOM_KEX", "KEX (2024)", "4461d4511386518e784c647e3128e7bc",
-		 DOOM_KEX_data, DOOM_KEX_len, {37320, 12715838, 17654}}
+		{"DOOM_KEX", "KEX (2024)", "3b37188f6337f15718b617c16e6e7a9c",
+		 DOOM_KEX_data, DOOM_KEX_len, {200520, 12839571, 156944}}
 	};
 
 static iwad_patch_info patchDoom2[NUM_DOOM2_PATCHES] =
 	{
 		{"DOOM2_1666G", "1.666 German", "d9153ced9fd5b898b36cc5844e35b520",
-		 DOOM2_1666G_data, DOOM2_1666G_len, {225264, 14612783, 211933}},
+		 DOOM2_1666G_data, DOOM2_1666G_len, {226776, 14614064, 210652}},
 		{"DOOM2_1666", "1.666", "30e3c2d0350b67bfbf47271970b74b2f",
 		 DOOM2_1666_data, DOOM2_1666_len, {31680, 14911693, 31707}},
 		{"DOOM2_17", "1.7", "ea74a47a791fdef2e9f2ea8b8a9da13b",
@@ -199,32 +199,32 @@ static iwad_patch_info patchDoom2[NUM_DOOM2_PATCHES] =
 		 DOOM2_ETERNAL_data, DOOM2_ETERNAL_len, {37656, 14548287, 54925}},
 		{"DOOM2_UNITY", "Unity 1.3", "8ab6d0527a29efdc1ef200e5687b5cae",
 		 DOOM2_UNITY_data, DOOM2_UNITY_len, {242856, 14558806, 244037}},
-		{"DOOM2_KEX", "KEX (2024)", "9aa3cbf65b961d0bdac98ec403b832e1",
-		 DOOM2_KEX_data, DOOM2_KEX_len, {13152, 14767338, 35168}}
+		{"DOOM2_KEX", "KEX (2024)", "64a4c88a871da67492aaa2020a068cd8",
+		 DOOM2_KEX_data, DOOM2_KEX_len, {127032, 14851999, 99362}}
 	};
 
 static iwad_patch_info patchPlutonia[NUM_PLUTONIA_PATCHES] =
 	{
 		{"PLUTONIA_19", "1.9", "75c8cf89566741fa9d22447604053bd7",
-		 PLUTONIA_19_data, PLUTONIA_19_len, {83112, 17409678, 11146}},
+		 PLUTONIA_19_data, PLUTONIA_19_len, {91032, 17403227, 17597}},
 		{"PLUTONIA_19ANTH", "1.9 Anthology", "3493be7e1e2588bc9c8b31eab2587a04",
 		 PLUTONIA_19ANTH_data, PLUTONIA_19ANTH_len, {1080, 18239811, 361}},
 		{"PLUTONIA_UNITY", "Unity 1.3", "ae76c20366ff685d3bb9fab11b148b84",
 		 PLUTONIA_UNITY_data, PLUTONIA_UNITY_len, {140280, 17447083, 70103}},
-		{"PLUTONIA_KEX", "KEX (2024)", "24037397056e919961005e08611623f4",
-		 PLUTONIA_KEX_data, PLUTONIA_KEX_len, {4272, 17517391, 14102}}
+		{"PLUTONIA_KEX", "KEX (2024)", "e47cf6d82a0ccedf8c1c16a284bb5937",
+		 PLUTONIA_KEX_data, PLUTONIA_KEX_len, {114792, 17611639, 92567}}
 	};
 
 static iwad_patch_info patchTnt[NUM_TNT_PATCHES] =
 	{
 		{"TNT_19", "1.9", "4e158d9953c79ccf97bd0663244cc6b6",
-		 TNT_19_data, TNT_19_len, {90000, 18176539, 19197}},
+		 TNT_19_data, TNT_19_len, {138120, 18147234, 48502}},
 		{"TNT_19ANTH", "1.9 Anthology", "1d39e405bf6ee3df69a8d2646c8d5c49",
 		 TNT_19ANTH_data, TNT_19ANTH_len, {13680, 18645995, 8801}},
 		{"TNT_UNITY", "Unity 1.3", "f5528f6fd55cf9629141d79eda169630",
 		 TNT_UNITY_data, TNT_UNITY_len, {137352, 17731162, 798722}},
-		{"TNT_KEX", "KEX (2024)", "8974e3117ed4a1839c752d5e11ab1b7b",
-		 TNT_KEX_data, TNT_KEX_len, {4104, 17784117, 520513}}
+		{"TNT_KEX", "KEX (2024)", "ad7885c17a6b9b79b09d7a7634dd7e2c",
+		 TNT_KEX_data, TNT_KEX_len, {181920, 17850426, 656811}}
 	};
 
 static iwad_patch_info patchHeretic[NUM_HERETIC_PATCHES] =
@@ -457,6 +457,14 @@ static int patch_aux(const char *infile, const char *outfile,
 		return 0;
 	}
 
+	errs = file_to_mem(infile, &in_buf, &in_sz);
+
+	if (errs)
+	{
+		*msg = errs;
+		return 0;
+	}
+
 	if (init_ver == fin_ver)
 	{
 		if (default_name)
@@ -464,15 +472,14 @@ static int patch_aux(const char *infile, const char *outfile,
 		else
 			snprintf(msgstr, sizeof(msgstr), "%s (%s) is already at version %s.", iwad[game].iwadName, infile, iwad[game].patchInfo[fin_ver].versionStr);
 		*msg = msgstr;
-		return 0;
-	}
 
-	errs = file_to_mem(infile, &in_buf, &in_sz);
+		// If backup is false, copy loaded file to outfile (if provided)
+		if (!backup && outfile && *outfile) {
+			mem_to_file(in_buf, in_sz, outfile);
+		}
 
-	if (errs)
-	{
-		*msg = errs;
-		return 0;
+		free(in_buf); // Free the memory
+		return 1; // Return success, file is already at desired version
 	}
 
 	/* Patching loop */
@@ -546,14 +553,14 @@ int WINAPI patch_iwad_to(const char *iwadfile, int backup, const char *version, 
 
 int WINAPI patch_iwad2(const char *infile, const char *outfile, char **msg)
 {
-	return patch_aux(infile, outfile, 1, NULL, msg);
+	return patch_aux(infile, outfile, 0, NULL, msg);
 }
 
 /***************************************************************************/
 
 int WINAPI patch_iwad_to2(const char *infile, const char *outfile, const char *version, char **msg)
 {
-	return patch_aux(infile, outfile, 1, version, msg);
+	return patch_aux(infile, outfile, 0, version, msg);
 }
 
 /***************************************************************************/

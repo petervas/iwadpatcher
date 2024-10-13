@@ -21,7 +21,7 @@ Compile:
     Linux:   Unpack bsdifflib (https://github.com/petervas/bsdifflib)
              source code to the bsdifflib folder.
              Run make.
-    
+
     Windows: Unpack bzip2 source code to the bzip2 folder.
              Unpack bsdifflib (https://github.com/petervas/bsdifflib)
              source code to the bsdifflib folder.
@@ -29,19 +29,26 @@ Compile:
 
 Changelog:
 
+    IWadPatcher 1.4 (13 October 2024)
+
+        Update KEX edition to 2024-10-03 release.
+        Makefile refactoring.
+        Add ddl.mak for DLL builds.
+        Add testcases for Linux and Windows.
+
     IWadPatcher 1.3 (22 September 2024)
-        
+
         Add support for Unity and KEX edition doom.wad, doom2.wad,
         plutonia.wad and tnt.wad.
         Remove bzip2 and bsdifflib source code.
         IWad will now be detected by file hash instead of file name.
-        
+
     IWadPatcher 1.2 (20 October 2012)
-        
+
         Add support for BFG edition doom.wad and doom2.wad.
 
     IWadPatcher 1.1 (9 November 2010)
-        
+
         Hippocrates Sendoukas optimized the patching process to 
         take place in memory and minimize disk access.
         Updated libbzip2 to 1.0.6.

@@ -28,7 +28,7 @@
 #define PATCHESH__
 
 extern unsigned char DOOM_11_data[];
-#define DOOM_11_len 292074
+#define DOOM_11_len 295003
 
 extern unsigned char DOOM_12_data[];
 #define DOOM_12_len 132538
@@ -55,10 +55,10 @@ extern unsigned char DOOM_UNITY_data[];
 #define DOOM_UNITY_len 131921
 
 extern unsigned char DOOM_KEX_data[];
-#define DOOM_KEX_len 26139
+#define DOOM_KEX_len 132087
 
 extern unsigned char DOOM2_1666G_data[];
-#define DOOM2_1666G_len 189987
+#define DOOM2_1666G_len 189590
 
 extern unsigned char DOOM2_1666_data[];
 #define DOOM2_1666_len 45965
@@ -85,10 +85,10 @@ extern unsigned char DOOM2_UNITY_data[];
 #define DOOM2_UNITY_len 191760
 
 extern unsigned char DOOM2_KEX_data[];
-#define DOOM2_KEX_len 24042
+#define DOOM2_KEX_len 75865
 
 extern unsigned char PLUTONIA_19_data[];
-#define PLUTONIA_19_len 27348
+#define PLUTONIA_19_len 29429
 
 extern unsigned char PLUTONIA_19ANTH_data[];
 #define PLUTONIA_19ANTH_len 1395
@@ -97,10 +97,10 @@ extern unsigned char PLUTONIA_UNITY_data[];
 #define PLUTONIA_UNITY_len 74572
 
 extern unsigned char PLUTONIA_KEX_data[];
-#define PLUTONIA_KEX_len 8502
+#define PLUTONIA_KEX_len 65771
 
 extern unsigned char TNT_19_data[];
-#define TNT_19_len 43100
+#define TNT_19_len 92401
 
 extern unsigned char TNT_19ANTH_data[];
 #define TNT_19ANTH_len 17490
@@ -109,7 +109,7 @@ extern unsigned char TNT_UNITY_data[];
 #define TNT_UNITY_len 167319
 
 extern unsigned char TNT_KEX_data[];
-#define TNT_KEX_len 119562
+#define TNT_KEX_len 253241
 
 extern unsigned char HERETIC_10_data[];
 #define HERETIC_10_len 43530
