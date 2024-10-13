@@ -18,9 +18,7 @@ BSDIFF_SRCS = bsdifflib\bspatchlib.c
 BZIP2_SRCS = bzip2\blocksort.c bzip2\bzlib.c bzip2\compress.c bzip2\crctable.c bzip2\decompress.c bzip2\huffman.c bzip2\randtable.c
 
 # Object files
-IWADPATCHER_OBJS = $(IWADPATCHER_SRCS:.c=.obj)
-BSDIFF_OBJS = $(BSDIFF_SRCS:.c=.obj)
-BZIP2_OBJS = $(BZIP2_SRCS:.c=.obj)
+OBJS = $(IWADPATCHER_SRCS:.c=.obj) $(BSDIFF_SRCS:.c=.obj) $(BZIP2_SRCS:.c=.obj)
 
 # Default target
 all: iwadpatcher.exe
@@ -30,9 +28,9 @@ all: iwadpatcher.exe
 	$(CC) $(CFLAGS) /c /Fo$(@D)\ $<
 
 # Link object files
-iwadpatcher.exe: $(IWADPATCHER_OBJS) $(BSDIFF_OBJS) $(BZIP2_OBJS)
-	$(LINK) $(LFLAGS) -out:$@ $(IWADPATCHER_OBJS) $(BSDIFF_OBJS) $(BZIP2_OBJS)
+iwadpatcher.exe: $(OBJS)
+	$(LINK) $(LFLAGS) -out:$@ $(OBJS)
 
 # Clean target
 clean:
-	del /Q /F iwadpatcher.exe $(BSDIFF_OBJS) $(BZIP2_OBJS) $(IWADPATCHER_OBJS)
+	del /Q /F iwadpatcher.exe $(OBJS)
